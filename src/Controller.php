@@ -13,6 +13,19 @@
 
 
 		/**
+		 *
+		 */
+		public function __invoke()
+		{
+			$action = $this->action;
+
+			return !is_callable($action)
+				? $this->$action()
+				: $action();
+		}
+
+
+		/**
 		 * Sets a context element via array access (NOT ALLOWED)
 		 *
 		 * @access public
@@ -72,6 +85,16 @@
 			}
 
 			return $this->context[$offset];
+		}
+
+
+		/**
+		 *
+		 */
+		public function prepare($action, $context = array())
+		{
+			$this->action  = $action;
+			$this->context = array_merge($this->context, $context);
 		}
 	}
 }
