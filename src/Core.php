@@ -59,13 +59,11 @@
 		 */
 		public function getEnvironment($key, $default = NULL)
 		{
-			if (isset($_SERVER[$key])) {
-				return $_SERVER[$key];
-			} elseif (isset($_ENV[$key])) {
-				return $_ENV[$key];
-			}
+			$value = isset($_SERVER[$key])
+				? $_SERVER[$key]
+				: getenv($key);
 
-			return $default;
+			return $value ?: $default;
 		}
 
 
