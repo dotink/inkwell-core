@@ -92,7 +92,7 @@
 			}
 
 			if (!is_dir($write_directory) && !@mkdir($write_directory, 0777, TRUE)) {
-				throw new Flourish\EnvironmentExecption(
+				throw new Flourish\EnvironmentException(
 					'Unable to resolve write directory %s',
 					$write_directory
 				);
@@ -168,6 +168,15 @@
 		/**
 		 *
 		 */
+		public function run($callback)
+		{
+			$this['engine']->exec($callback);
+		}
+
+
+		/**
+		 *
+		 */
 		public function setExecutionMode($mode)
 		{
 			$valid_execution_modes = ['development', 'production'];
@@ -191,7 +200,7 @@
 			$write_directory = $this->getDirectory($directory);
 
 			if (!is_dir($write_directory) || !is_writable($write_directory)) {
-				throw new Flourish\EnvironmentExecption(
+				throw new Flourish\EnvironmentException(
 					'Cannot set writable directory %s, not a directory or not writable',
 					$write_directory
 				);
