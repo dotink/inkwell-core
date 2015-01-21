@@ -125,7 +125,7 @@
 		 */
 		public function offsetExists($offset)
 		{
-			return isset($this->context[$offset]);
+			return array_key_exists($offset, $this->context);
 		}
 
 
