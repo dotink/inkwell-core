@@ -1,1 +1,2 @@
-# The inKWell Core
+# The main application functionality for inKWell
+============
