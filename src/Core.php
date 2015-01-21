@@ -45,7 +45,7 @@
 
 			if (!is_dir($directory)) {
 				throw new Flourish\ProgrammerException(
-					'Coult not access directory %s',
+					'Could not access directory "%s"',
 					$directory
 				);
 			}
