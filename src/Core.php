@@ -31,6 +31,19 @@
 		/**
 		 *
 		 */
+		public function checkSAPI($sapi)
+		{
+			if (!is_array($sapi)) {
+				$sapi = [$sapi];
+			}
+
+			return in_array(PHP_SAPI, $sapi);
+		}
+
+
+		/**
+		 *
+		 */
 		public function getDirectory($sub_directory = NULL)
 		{
 			if ($sub_directory) {
