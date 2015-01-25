@@ -9,8 +9,10 @@
 		// Setup execution mode and debugging
 		//
 
-		ini_set('display_errors', 0);
-		ini_set('display_startup_errors', 0);
+		if (!$app->checkSAPI(['cli', 'embed'])) {
+			ini_set('display_errors', 0);
+			ini_set('display_startup_errors', 0);
+		}
 
 		$server_admin      = $app->getEnvironment('SERVER_ADMIN', 'root');
 		$debugging         = $app['engine']->fetch('core', 'debugging', []);
@@ -46,6 +48,8 @@
 
 		$app->setExecutionMode($execution_mode);
 		$app->setWriteDirectory($app['engine']->fetch('core', 'write_directory', 'writable'));
+
+		date_default_timezone_set($app['engine']->fetch('core', 'timezone', 'GMT'));
 
 		foreach ($app['engine']->fetch('@providers') as $id) {
 			$provider_mapping = $app['engine']->fetch($id, '@providers.mapping', []);
