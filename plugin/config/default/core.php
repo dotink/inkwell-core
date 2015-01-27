@@ -1,6 +1,15 @@
 <?php
 
 	return Affinity\Config::create([
+		//
+		// The system php command
+		//
+		'php' => 'php',
+
+		//
+		// The document root
+		//
+		'docroot' => 'public',
 
 		//
 		// The execution mode determines default operation for some processes which should
