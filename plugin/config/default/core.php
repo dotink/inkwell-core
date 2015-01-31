@@ -37,6 +37,15 @@
 		],
 
 		//
+		// Session settings
+		//
+
+		'session' => [
+			'name' => 'IWSESSID',
+			'path' => sys_get_temp_dir()
+		],
+
+		//
 		// The write directory provides a base directory to which the system and services can write
 		// files to.  If some of these files need to be public, it is suggested you create relative
 		// symbolic links in the "public" folder.
