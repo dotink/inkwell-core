@@ -181,9 +181,11 @@
 		/**
 		 *
 		 */
-		public function run($callback)
+		public function run($callback = NULL)
 		{
-			$this['engine']->exec($callback);
+			return $this['engine']->exec($callback ?: $this['engine.handler'] ?: function() {
+				echo 'No Handler Provided';
+			});
 		}
 
 
