@@ -96,4 +96,5 @@
 		//
 
 		$broker->share($broker);
+		$broker->share($app);
 	});
