@@ -20,8 +20,7 @@
 	"require": {
 		"php": ">=5.4.0",
 		"imarc/opus": "^1.0.0",
-		"dotink/flourish-core": "^1.0.0",
-		"filp/whoops": "~1.0"
+		"dotink/flourish-core": "^1.0.0"
 	},
 	"autoload": {
 		"classmap": ["src/"]
