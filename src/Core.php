@@ -2,16 +2,49 @@
 {
 	use ArrayAccess;
 	use Dotink\Flourish;
-	use IW;
 
+	/**
+	 * The inKWell application core.
+	 *
+	 * The application core acts as a container with some basic helper methods to maintain and
+	 * the state of the application.
+	 */
 	class Core implements ArrayAccess
 	{
-		private $executionMode  = NULL;
-		private $rootDirectory  = NULL;
-		private $writeDirectory = NULL;
+		const DS = DIRECTORY_SEPARATOR;
+		const REGEX_ABSOLUTE_PATH = '#^(/|\\\\|[a-z]:(\\\\|/)|\\\\|//)#i';
 
 		/**
+		 * The execution mode for the application
 		 *
+		 * @access private
+		 * @var string
+		 */
+		private $executionMode  = NULL;
+
+		/**
+		 * The root directory for the application
+		 *
+		 * @access private
+		 * @var string
+		 */
+		private $rootDirectory  = NULL;
+
+		/**
+		 * The writable directory for the application
+		 *
+		 * @access private
+		 * @var string
+		 */
+		private $writeDirectory = NULL;
+
+
+		/**
+		 * Instantiate a new application at a given root directory
+		 *
+		 * @access public
+		 * @param string $root_directory The root directory for the new application instance
+		 * @return void
 		 */
 		public function __construct($root_directory)
 		{
@@ -20,7 +53,11 @@
 
 
 		/**
+		 * Check the current execution mode
 		 *
+		 * @access public
+		 * @param string $mode The mode for which we wish to check
+		 * @return boolean TRUE if the current execution mode matches `$mode`, FALSE otherwise
 		 */
 		public function checkExecutionMode($mode)
 		{
@@ -29,27 +66,34 @@
 
 
 		/**
+		 * Check the current SAPI provider
 		 *
+		 * @access public
+		 * @param string|array $sapi The SAPI name(s) for which we wish to check
+		 * @return boolean TRUE if the current SAPI provider matches `$sapi`, FALSE otherwise
 		 */
 		public function checkSAPI($sapi)
 		{
-			if (!is_array($sapi)) {
-				$sapi = [$sapi];
-			}
+			settype($sapi, 'array');
 
 			return in_array(PHP_SAPI, $sapi);
 		}
 
 
 		/**
+		 * Get the application root directory or an absolute path to a relative sub directory
 		 *
+		 * @access public
+		 * @param string $sub_directory A relative sub-directory for which to get an absolute path
+		 * @return string The absolute path to the application root or sub directory within it
+		 * @throws Flourish\ProgrammerException If the path is not a directory
 		 */
 		public function getDirectory($sub_directory = NULL)
 		{
 			if ($sub_directory) {
-				$sub_directory = str_replace('/', IW\DS, $sub_directory);
-				$directory     = !preg_match(IW\REGEX\ABSOLUTE_PATH, $sub_directory)
-					? $this->getDirectory() . IW\DS . $sub_directory
+				$sub_directory = str_replace('/', self::DS, $sub_directory);
+				$directory     = !preg_match(self::REGEX_ABSOLUTE_PATH, $sub_directory)
+					? $this->getDirectory() . self::DS . $sub_directory
 					: $sub_directory;
 
 			} else {
@@ -63,12 +107,17 @@
 				);
 			}
 
-			return rtrim($directory, '/\\' . IW\DS);
+			return rtrim($directory, '/\\' . self::DS);
 		}
 
 
 		/**
+		 * Get an environment variable from the server or execution context
 		 *
+		 * @access public
+		 * @param string $key The key from which to retrieve the environment variable
+		 * @param mixed $default The default value if the `$key` is not found in the environment
+		 * @return mixed The environment variable value or the `$default` if it does not exist
 		 */
 		public function getEnvironment($key, $default = NULL)
 		{
@@ -81,7 +130,10 @@
 
 
 		/**
+		 * Get the current execution mode
 		 *
+		 * @access public
+		 * @return string The current execution mode
 		 */
 		public function getExecutionMode()
 		{
@@ -90,28 +142,45 @@
 
 
 		/**
+		 * Get the application write directory or an absolute path to a relative sub directory
 		 *
+		 * This method will attempt to create a writable directory if it the specified directory
+		 * or sub-directory does not exist.
+		 *
+		 * @access public
+		 * @param string $sub_directory A relative sub-directory for which to get an absolute path
+		 * @param integer $mode The mode (permissions) with which to create a directory
+		 * @return string The absolute path to the application write directory or sub directory within it
+		 * @throws Flourish\ProgrammerException If the path is not writable/creatable
 		 */
-		public function getWriteDirectory($sub_directory = NULL)
+		public function getWriteDirectory($sub_directory = NULL, $mode = 0770)
 		{
 			if ($sub_directory) {
-				$sub_directory   = str_replace('/', IW\DS, $sub_directory);
-				$write_directory = !preg_match(IW\REGEX\ABSOLUTE_PATH, $sub_directory)
-					? $this->getWriteDirectory() . IW\DS . $sub_directory
+				$sub_directory   = str_replace('/', self::DS, $sub_directory);
+				$write_directory = !preg_match(self::REGEX_ABSOLUTE_PATH, $sub_directory)
+					? $this->getWriteDirectory() . self::DS . $sub_directory
 					: $sub_directory;
 
 			} else {
 				$write_directory = $this->writeDirectory;
 			}
 
-			if (!is_dir($write_directory) && !@mkdir($write_directory, 0777, TRUE)) {
+			if (!is_dir($write_directory)) {
+				if (!@mkdir($write_directory, $mode, TRUE)) {
+					throw new Flourish\EnvironmentException(
+						'Unable to resolve write directory %s, does not exist',
+						$write_directory
+					);
+				}
+
+			} elseif (!is_writable($write_directory)) {
 				throw new Flourish\EnvironmentException(
-					'Unable to resolve write directory %s',
+					'Unable to resolve write directory %s, not writable',
 					$write_directory
 				);
 			}
 
-			return rtrim($write_directory, '/\\' . IW\DS);
+			return rtrim($write_directory, '/\\' . self::DS);
 		}
 
 
@@ -179,10 +248,25 @@
 
 
 		/**
+		 * Run the application
 		 *
+		 * If a callback is provided the callback will be passed to the registered engine for
+		 * execution, otherwise if the application contains an `engine.handler`, it will be passed
+		 * to the engine for execution.
+		 *
+		 * @access public
+		 * @param callable $callback The callback which the engine should execute
+		 * @return mixed The return result from the execution of the callback
+		 * @throws Flourish\ProgrammerException if no engine is registered in the app container
 		 */
-		public function run($callback = NULL)
+		public function run(callable $callback = NULL)
 		{
+			if (!$this->offsetExists('engine')) {
+				throw new Flourish\ProgrammerException(
+					'No engine was provided with which to execute the application'
+				);
+			}
+
 			return $this['engine']->exec($callback ?: $this['engine.handler'] ?: function() {
 				echo 'No Handler Provided';
 			});
@@ -190,7 +274,14 @@
 
 
 		/**
+		 * Set the current execution mode
 		 *
+		 * Valid execution modes include 'development' or 'production'.
+		 *
+		 * @access public
+		 * @param string $mode The current execution mode
+		 * @return void
+		 * @throws Flourish\ProgrammerException If the provided `$mode` is not valid
 		 */
 		public function setExecutionMode($mode)
 		{
@@ -208,7 +299,12 @@
 
 
 		/**
+		 * Set the write directory as an absolute path or sub-diretory of the application root
 		 *
+		 * @access public
+		 * @param string $directory The write directory for the application
+		 * @return void
+		 * @throws Flourish\ProgrammerException If the `$directory` is not a directory or writable
 		 */
 		public function setWriteDirectory($directory)
 		{
