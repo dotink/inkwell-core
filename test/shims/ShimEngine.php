@@ -4,7 +4,7 @@
 	{
 		public function exec(callable $callback)
 		{
-			return TRUE;
+			return $callback();
 		}
 	}
 }

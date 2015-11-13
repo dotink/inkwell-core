@@ -15,6 +15,14 @@
 		const REGEX_ABSOLUTE_PATH = '#^(/|\\\\|[a-z]:(\\\\|/)|\\\\|//)#i';
 
 		/**
+		 * The container context
+		 *
+		 * @access private
+		 * @var array
+		 */
+		private $context = array();
+
+		/**
 		 * The execution mode for the application
 		 *
 		 * @access private
@@ -86,7 +94,7 @@
 		 * @access public
 		 * @param string $sub_directory A relative sub-directory for which to get an absolute path
 		 * @return string The absolute path to the application root or sub directory within it
-		 * @throws Flourish\ProgrammerException If the path is not a directory
+		 * @throws Flourish\EnvironmentException If the path is not a directory
 		 */
 		public function getDirectory($sub_directory = NULL)
 		{
@@ -101,8 +109,8 @@
 			}
 
 			if (!is_dir($directory)) {
-				throw new Flourish\ProgrammerException(
-					'Could not access directory "%s"',
+				throw new Flourish\EnvironmentException(
+					'Could not access "%s", not a directory',
 					$directory
 				);
 			}
@@ -151,7 +159,7 @@
 		 * @param string $sub_directory A relative sub-directory for which to get an absolute path
 		 * @param integer $mode The mode (permissions) with which to create a directory
 		 * @return string The absolute path to the application write directory or sub directory within it
-		 * @throws Flourish\ProgrammerException If the path is not writable/creatable
+		 * @throws Flourish\EnvironmentException If the path is not writable/creatable
 		 */
 		public function getWriteDirectory($sub_directory = NULL, $mode = 0770)
 		{
@@ -258,6 +266,7 @@
 		 * @param callable $callback The callback which the engine should execute
 		 * @return mixed The return result from the execution of the callback
 		 * @throws Flourish\ProgrammerException if no engine is registered in the app container
+		 * @throws Flourish\ProgrammerException if no handler is registered in the app container
 		 */
 		public function run(callable $callback = NULL)
 		{
@@ -267,9 +276,7 @@
 				);
 			}
 
-			return $this['engine']->exec($callback ?: $this['engine.handler'] ?: function() {
-				echo 'No Handler Provided';
-			});
+			return $this['engine']->exec($callback ?: $this['engine.handler']);
 		}
 
 
@@ -310,9 +317,9 @@
 		{
 			$write_directory = $this->getDirectory($directory);
 
-			if (!is_dir($write_directory) || !is_writable($write_directory)) {
+			if (!is_writable($write_directory)) {
 				throw new Flourish\EnvironmentException(
-					'Cannot set writable directory %s, not a directory or not writable',
+					'Cannot set writable directory %s, directory is not writable',
 					$write_directory
 				);
 			}
