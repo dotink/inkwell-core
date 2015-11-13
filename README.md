@@ -1,6 +1,6 @@
 A Basic Application Container/Service
 ====================================================================================================
-[![Build Status](https://travis-ci.org/dotink/flourish-cryptography.svg?branch=master)](https://travis-ci.org/dotink/flourish-cryptography)
+[![Build Status](https://travis-ci.org/dotink/inkwell-core.svg?branch=master)](https://travis-ci.org/dotink/inkwell-core)
 
 The inKWell core package provides the basic application container and services
 required for a simple PHP application.  The core represents an array
