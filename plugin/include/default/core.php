@@ -8,16 +8,16 @@
 
 		$server_admin = $app->getEnvironment('SERVER_ADMIN', 'root');
 
-		$app->setExecutionMode($app['engine']->fetch('core', 'execution_mode', IW\EXEC_MODE\PRODUCTION));
-		$app->setWriteDirectory($app['engine']->fetch('core', 'write_directory', 'writable'));
+		$app->setExecutionMode($this->fetch('core', 'execution_mode', IW\EXEC_MODE\PRODUCTION));
+		$app->setWriteDirectory($this->fetch('core', 'write_directory', 'writable'));
 
 		//
 		// Setup some standard PHP requirements
 		//
 
-		$default_timezone = $app['engine']->fetch('core', 'timezone', 'GMT');
-		$session_path     = $app['engine']->fetch('core', 'session.path', sys_get_temp_dir());
-		$session_name     = $app['engine']->fetch('core', 'session.name', 'IWSESSID');
+		$default_timezone = $this->fetch('core', 'timezone', 'GMT');
+		$session_path     = $this->fetch('core', 'session.path', sys_get_temp_dir());
+		$session_name     = $this->fetch('core', 'session.name', 'IWSESSID');
 
 		date_default_timezone_set($default_timezone);
 		session_save_path($app->getDirectory($session_path));
@@ -33,9 +33,9 @@
 			}
 		}
 
-		foreach ($app['engine']->fetch('@providers') as $id) {
-			$provider_mapping = $app['engine']->fetch($id, '@providers.mapping', []);
-			$provider_params  = $app['engine']->fetch($id, '@providers.params',  []);
+		foreach ($this->fetch('@providers') as $id) {
+			$provider_mapping = $this->fetch($id, '@providers.mapping', []);
+			$provider_params  = $this->fetch($id, '@providers.params',  []);
 
 			foreach ($provider_mapping as $interface => $provider) {
 				$broker->alias($interface, $provider);

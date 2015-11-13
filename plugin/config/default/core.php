@@ -4,11 +4,13 @@
 		//
 		// The system php command
 		//
+
 		'php' => 'php',
 
 		//
 		// The document root
 		//
+
 		'docroot' => 'public',
 
 		//
@@ -23,18 +25,6 @@
 		//
 
 		'timezone' => 'US/Pacific',
-
-		//
-		// Debugging information to use.  Keeping the debugging destination to NULL will
-		// change the default depending on the execution mode.  If the execution mode
-		// is IW\EXEC_MODE\DEVELOPMENT, it will dump errors to the screen.  Otherwise it will
-		// use the configured $_SERVER['SERVER_ADMIN'] e-mail address.
-		//
-
-		'debugging' => [
-			'destination' => NULL,
-			'error_level' => E_ALL,
-		],
 
 		//
 		// Session settings
