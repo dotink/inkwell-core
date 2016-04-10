@@ -38,7 +38,11 @@
 			$provider_params  = $this->fetch($id, '@providers.params',  []);
 
 			foreach ($provider_mapping as $interface => $provider) {
-				$broker->alias($interface, $provider);
+				if ($provider instanceof \Closure) {
+					$broker->delegate($interface, $provider);
+				} else {
+					$broker->alias($interface, $provider);
+				}
 			}
 
 			foreach ($provider_params as $provider => $params) {
