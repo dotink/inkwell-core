@@ -3,9 +3,12 @@
 	use Affinity;
 
 	/**
-	 * A default engine based on Affinity
+	 * A default engine based on Affinity to enforce interface compliance
 	 *
-	 * This is only usable if Affinity is installed.
+	 * @copyright Copyright (c) 2015, Matthew J. Sahagian
+	 * @author Matthew J. Sahagian [mjs] <msahagian@dotink.org>
+	 *
+	 * @license Please reference the LICENSE.md file at the root of this distribution
 	 */
 	class DefaultEngine extends Affinity\Engine implements EngineInterface
 	{

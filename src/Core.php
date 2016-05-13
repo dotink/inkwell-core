@@ -8,6 +8,11 @@
 	 *
 	 * The application core acts as a container with some basic helper methods to maintain and
 	 * the state of the application.
+	 *
+	 * @copyright Copyright (c) 2015, Matthew J. Sahagian
+	 * @author Matthew J. Sahagian [mjs] <msahagian@dotink.org>
+	 *
+	 * @license Please reference the LICENSE.md file at the root of this distribution
 	 */
 	class Core implements ArrayAccess
 	{

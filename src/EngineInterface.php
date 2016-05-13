@@ -5,6 +5,11 @@
 	 *
 	 * Any engine registered with the application container should implement this interface
 	 * so that it can run the application.
+	 *
+	 * @copyright Copyright (c) 2015, Matthew J. Sahagian
+	 * @author Matthew J. Sahagian [mjs] <msahagian@dotink.org>
+	 *
+	 * @license Please reference the LICENSE.md file at the root of this distribution
 	 */
 	interface EngineInterface
 	{
