@@ -17,16 +17,19 @@
 			"url": "http://packages.dotink.org"
 		}
 	],
+	"require-dev": {
+		"dotink/lab": "^1.1.0"
+	},
 	"require": {
 		"php": ">=5.4.0",
 		"imarc/opus": "^1.0.0",
 		"dotink/flourish-core": "^1.0.0"
 	},
-	"require-dev": {
-		"dotink/lab": "^1.1.0"
-	},
 	"autoload": {
 		"classmap": ["src/"]
+	},
+	"config": {
+		"secure-http": false
 	},
 	"extra": {
 		"opus": {
