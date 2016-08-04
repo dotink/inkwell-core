@@ -24,7 +24,7 @@
 		// Timezone
 		//
 
-		'timezone' => 'US/Pacific',
+		'timezone' => 'America/Los_Angeles',
 
 		//
 		// Session settings
